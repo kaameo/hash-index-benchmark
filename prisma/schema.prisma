@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model HashRecord {
+  id          BigInt   @id @default(autoincrement())
+  hashBtree   String   @map("hash_btree") @db.VarChar(64)    // B-tree 인덱스
+  hashHash    String   @map("hash_hash") @db.VarChar(64)     // Hash 인덱스
+  hashNoindex String   @map("hash_noindex") @db.VarChar(64)  // 인덱스 없음
+  createdAt   DateTime @default(now()) @map("created_at")
+  status      Int      @default(0) @db.SmallInt
+  metadata    Json     @default("{}")
+
+  @@index([hashBtree])
+  @@map("hash_records")
+}
